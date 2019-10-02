@@ -1,0 +1,24 @@
+配置文件管理
+  系统配置文件共分为5大类：MyBatis的核心配置文件mybatis-config.xml（在mybatis包中）、Spring的核心配置文件applicationContext.xml、MyBatis的日志记录文件log4j.properties、Spring MVC的核心配置文件springmvc-servlet.xml以及Web应用的配置文件web.xml。
+
+组件设计
+  本系统的组件包括管理员登录权限验证控制器、前台用户登录权限验证控制器、验证码、统一异常处理以及工具类。
+
+管理员登录权限验证
+  从系统分析得知，管理员成功登录后，才能管理商品、商品类型、用户、订单以及公告等功能模块。因此，本系统需要对这些功能模块的操作进行管理员登录权限控制。在com.controller.admin包中创建了BaseController控制器类，该类中有一个@ModelAttribute注解的方法isLogin。isLogin方法的功能是判断管理员是否已成功登录。需要进行管理员登录权限控制的控制器类继承BaseController类即可，因为@ModelAttribute注解的方法首先被控制器执行。
+
+前台用户登录权限验证
+  从系统分析得知，用户成功登录后，才能购买商品、关注商品、查看购物车以及用户中心。与管理员登录权限验证同理，在com.controller.before包中创建了BaseBeforeController控制器类，该类中有一个@ModelAttribute注解的方法isLogin。isLogin方法的功能是判断前台用户是否已成功登录。需要进行前台用户登录权限控制的控制器类继承BaseBeforeController类即可，因为@ModelAttribute注解的方法首先被控制器执行。
+
+统一异常处理
+      系统对管理员未登录异常、前台用户未登录异常以及程序未知异常进行了统一异常处理。具体步骤如下：
+1．创建未登录自定义异常
+    创建管理员未登录异常AdminLoginNoException和前台用户未登录异常UserLoginNoException，代码略。
+2．创建HandlerExceptionResolver的实现类
+    应用ch20使用实现HandlerExceptionResolver接口的方式进行统一异常处理
+3．托管MyExceptionHandler
+    在Spring MVC的配置文件中，使用<bean>元素将MyExceptionHandler托管，具体代码如下：
+	<bean class="com.exception.MyExceptionHandler"/>
+
+工具类
+  本系统使用的工具类是MyUtil，该类中有两个工具方法：一是获得时间字符串，一是获得前台登录用户的ID。
